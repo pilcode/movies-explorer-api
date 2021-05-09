@@ -74,7 +74,9 @@ module.exports.updateUser = (req, res, next) => {
       res.status(200).send({ data: user, message: 'Данные пользователя успешно обновлены' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'MongoError' && err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении пользователя'));
       } else {
         next(err);

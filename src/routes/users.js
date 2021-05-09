@@ -7,10 +7,10 @@ const {
   //   getUserById,
 } = require('../controllers/users');
 
-// const {
-//   validateUpdateUser,
-//   validateUser,
-// } = require('../middlewares/validatons');
+const {
+  validateUpdateUser,
+  validateUserBody,
+} = require('../middlewares/validations');
 
 // router.get('/', getUsers);
 // router.patch('/me', validateUpdateUser, updateUser);
@@ -19,7 +19,7 @@ const {
 // router.patch('/me/avatar', validateAvatar, updateAvatar);
 
 router.get('/', getUsers);
-router.get('/me', getUserByToken);
-router.patch('/me', updateUser);
+router.get('/me', validateUserBody, getUserByToken);
+router.patch('/me', validateUpdateUser, updateUser);
 
 module.exports = router;

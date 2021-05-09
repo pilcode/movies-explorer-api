@@ -28,8 +28,13 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// проверить адрес БД!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+let mongoBD = 'mongodb://localhost:27017/bitfilmsdb-dev';
+
+if (process.env.NODE_ENV === 'production') {
+  mongoBD = process.env.MONGODB;
+}
+
+mongoose.connect(mongoBD, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
