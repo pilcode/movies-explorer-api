@@ -9,18 +9,14 @@ const cors = require('cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index');
-// const NotFoundError = require('./errors/not-found-err');
-// const {
-//   createUser,
-//   login,
-// } = require('./controllers/users');
-
-// const { validateUserLogin, validateUserBody } = require('./middlewares/validations');
-// const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/error-handler');
+const rateLimiter = require('./middlewares/rate-limiter');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
+
+app.use(rateLimiter);
 
 app.use(cors());
 
@@ -44,38 +40,12 @@ mongoose.connect(mongoBD, {
 
 app.use(requestLogger);
 
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
-
-// app.post('/signin', validateUserLogin, login);
-// app.post('/signup', validateUserBody, createUser);
-
-// app.use('/users', auth, require('./routes/users'));
-// app.use('/movies', auth, require('./routes/movies'));
 app.use(routes);
 
 app.use(errorLogger);
 
-// app.all('*', (req, res, next) => {
-//   next(new NotFoundError('Ресурс не найден'));
-// });
-
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT);

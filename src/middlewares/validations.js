@@ -1,7 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const { ObjectId } = require('mongoose').Types;
 const { isURL, isEmail } = require('validator');
-// const { isEmail } = require('validator');
 
 const validateUserLogin = celebrate({
   body: Joi.object().keys({
