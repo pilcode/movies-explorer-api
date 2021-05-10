@@ -102,6 +102,10 @@ const validateMovie = celebrate({
       if (!isURL(value, { require_protocol: true })) return helpers.error('Невалидный URL');
       return value;
     }),
+    movieId: Joi.number().integer().required()
+      .messages({
+        'any.required': 'Поле "movieId" должно быть заполнено',
+      }),
     nameRU: Joi.string().required().min(2).max(30)
       .messages({
         'string.min': 'Минимальная длина поля "name" - 2',

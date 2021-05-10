@@ -6,9 +6,15 @@ const BadRequestError = require('../errors/bad-request-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
 
+let jwtSecret = 'secret-dev';
+
+if (process.env.NODE_ENV === 'production') {
+  jwtSecret = process.env.JWT_SECRET;
+}
+
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((user) => res.status(200).send({ data: user, message: 'Пользователи найдены' }))
+    .then((user) => res.send({ data: user, message: 'Пользователи найдены' }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
@@ -34,7 +40,7 @@ module.exports.createUser = (req, res, next) => {
         password: hash,
         name,
       }))
-      .then((user) => res.status(201).send({ data: user.toJSON(), message: 'Пользователь успешно создан' }))
+      .then((user) => res.send({ data: user.toJSON(), message: 'Пользователь успешно создан' }))
       .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
           next(new ConflictError('Пользователь с таким email уже существует'));
@@ -54,7 +60,7 @@ module.exports.getUserByToken = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
-      res.status(200).send({ data: user, message: 'Пользователь найден' });
+      res.send({ data: user, message: 'Пользователь найден' });
     })
     .catch(next);
 };
@@ -71,7 +77,7 @@ module.exports.updateUser = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь с указанным _id не найден'));
       }
-      res.status(200).send({ data: user, message: 'Данные пользователя успешно обновлены' });
+      res.send({ data: user, message: 'Данные пользователя успешно обновлены' });
     })
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
@@ -90,7 +96,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        process.env.JWT_SECRET || 'Secret_key',
+        jwtSecret,
         { expiresIn: '7d' },
       );
       res.send({ token });

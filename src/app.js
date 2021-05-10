@@ -16,6 +16,8 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(requestLogger);
+
 app.use(rateLimiter);
 
 app.use(cors());
@@ -37,8 +39,6 @@ mongoose.connect(mongoBD, {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
-
-app.use(requestLogger);
 
 app.use(routes);
 

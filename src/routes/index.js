@@ -14,7 +14,7 @@ router.post('/signup', validateUserBody, createUser);
 router.use('/users', auth, require('./users'));
 router.use('/movies', auth, require('./movies'));
 
-router.all('*', (req, res, next) => {
+router.all('*', auth, (req, res, next) => {
   next(new NotFoundError('Ресурс не найден'));
 });
 
