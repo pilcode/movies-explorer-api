@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/not-found-err');
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
-    .then((card) => res.send({ data: card.reverse(), message: 'Фильмы найдены' }))
+    .then((card) => res.send({ data: card, message: 'Фильмы найдены' }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
