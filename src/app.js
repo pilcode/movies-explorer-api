@@ -16,11 +16,11 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(cors());
+
 app.use(requestLogger);
 
 app.use(rateLimiter);
-
-app.use(cors());
 
 app.use(helmet());
 

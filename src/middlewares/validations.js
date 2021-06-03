@@ -62,16 +62,16 @@ const validateUpdateUser = celebrate({
 
 const validateMovie = celebrate({
   body: Joi.object().keys({
-    country: Joi.string().required().min(2).max(30)
+    country: Joi.string().required().min(2).max(200)
       .messages({
         'string.min': 'Минимальная длина поля "name" - 2',
-        'string.max': 'Максимальная длина поля "name" - 30',
+        'string.max': 'Максимальная длина поля "name" - 200',
         'any.required': 'Поле "country" должно быть заполнено',
       }),
-    director: Joi.string().required().min(2).max(30)
+    director: Joi.string().required().min(2).max(200)
       .messages({
         'string.min': 'Минимальная длина поля "name" - 2',
-        'string.max': 'Максимальная длина поля "name" - 30',
+        'string.max': 'Максимальная длина поля "name" - 200',
         'any.required': 'Поле "director" должно быть заполнено',
       }),
     duration: Joi.number().required()
@@ -84,14 +84,14 @@ const validateMovie = celebrate({
         'string.max': 'Максимальная длина поля "name" - 10',
         'any.required': 'Поле "year" должно быть заполнено',
       }),
-    description: Joi.string().required().min(2).max(50)
+    description: Joi.string().required().min(2).max(2000)
       .messages({
-        'string.min': 'Минимальная длина поля "name" - 2',
-        'string.max': 'Максимальная длина поля "name" - 50',
+        'string.min': 'Минимальная длина поля "description" - 2',
+        'string.max': 'Максимальная длина поля "description" - 2000',
         'any.required': 'Поле "description" должно быть заполнено',
       }),
     image: Joi.string().required().custom((value, helpers) => {
-      if (!isURL(value, { require_protocol: true })) return helpers.error('Невалидный URL');
+      if (!isURL(value, { require_protocol: true }) && value !== '') return helpers.error('Невалидный URL');
       return value;
     }),
     trailer: Joi.string().required().custom((value, helpers) => {
@@ -99,23 +99,23 @@ const validateMovie = celebrate({
       return value;
     }),
     thumbnail: Joi.string().required().custom((value, helpers) => {
-      if (!isURL(value, { require_protocol: true })) return helpers.error('Невалидный URL');
+      if (!isURL(value, { require_protocol: true }) && value !== '') return helpers.error('Невалидный URL');
       return value;
     }),
     movieId: Joi.number().integer().required()
       .messages({
         'any.required': 'Поле "movieId" должно быть заполнено',
       }),
-    nameRU: Joi.string().required().min(2).max(30)
+    nameRU: Joi.string().required().min(2).max(100)
       .messages({
         'string.min': 'Минимальная длина поля "name" - 2',
-        'string.max': 'Максимальная длина поля "name" - 30',
+        'string.max': 'Максимальная длина поля "name" - 100',
         'any.required': 'Поле "nameRU" должно быть заполнено',
       }),
-    nameEN: Joi.string().required().min(2).max(30)
+    nameEN: Joi.string().required().min(2).max(100)
       .messages({
         'string.min': 'Минимальная длина поля "name" - 2',
-        'string.max': 'Максимальная длина поля "name" - 30',
+        'string.max': 'Максимальная длина поля "name" - 100',
         'any.required': 'Поле "nameEN" должно быть заполнено',
       }),
   }),
@@ -123,7 +123,7 @@ const validateMovie = celebrate({
 
 const validateMovieById = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().required().custom((value, helpers) => {
+    movId: Joi.string().required().custom((value, helpers) => {
       if (ObjectId.isValid(value)) {
         return value;
       }
